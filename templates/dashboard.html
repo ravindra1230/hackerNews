@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>News</title>
+</head>
+	<body>
+	{%csrf_token%}
+	
+	{% if user.is_authenticated %}
+		<h1>Hello, {{user.username}} </h1>
+		<h3><a href="logout">Logout</a></h3>
+	<br><br>
+		<h1><b><u>Dashboard</u></b></h1>
+		<table style="width:100%">
+			<!-- <col width=20% >
+			<col width=20% >
+			<col width=15% >
+			<col width=15% >
+			<col width=15% >
+			<col width=7% >
+			<col width=8% > -->
+		<tr><th><b>Article Url</b></th>
+	    <th>Hacker News Url</th>
+	    <th><b>Posted On</b></th> 
+    	<th><b>Upvotes</b></th> 
+    	<th><b>Comments</b></th></tr>
+    	<tr></tr>
+
+		  {% for article in articles %}
+		  {% if user.username not in article.user_deleted %}
+		  <tr>
+		  	{% if user.username not in article.user_read %}
+			    <th><b>{{article.url}}</b></th>
+			    <th>{{article.hacker_news_url}}</th>
+			    <th><b>{{article.posted_on}}</b></th> 
+		    	<th><b>{{article.upvotes}}</b></th> 
+		    	<th><b>{{article.comments}}</b></th>
+		    	<th><form action="read" method="post">
+					{%csrf_token%}
+					<button type="Submit" name="read_button" value="{{article.url}} {{user.username}}" >Read</button>
+				</form></th>
+			{%else%}
+				<td>{{article.url}}</td>
+				<td>{{article.hacker_news_url}}</td>
+			    <td>{{article.posted_on}}</td> 
+			    <td>{{article.upvotes}}</td> 
+			    <td>{{article.comments}}</td>
+			    <td></td>
+			{%endif%}
+		    
+		    <th><form action="delete" method="post">
+				{%csrf_token%}
+				<button type="Submit" name="delete_button" value="{{article.url}} {{user.username}}" >Delete</button>
+			</form></th>
+		  </tr>
+		  {%endif%}
+		  {%endfor%}
+
+	{%else%}
+		<li><a href="login">Login</a></li>
+		<h3>no dashboard until you login</h3>
+	{%endif%}
+	</body>
+</html>
